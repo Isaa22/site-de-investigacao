@@ -3,130 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arquivo Criminal - Casos Não Resolvidos</title>
+    <title>ARQUIVO COLD CASE - Investigação Criminal</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="overlay"></div>
+    
     <div class="container">
-        <!-- Cabeçalho Policial -->
+        <!-- Header Investigativo -->
         <header class="header">
-            <div class="badge">
-                <span class="badge-icon">🔒</span>
-                <span>ACESSO RESTRITO - EQUIPE PERÍCIAL</span>
+            <div class="warning-banner">
+                <span>⚠️ ACESSO AUTORIZADO APENAS PARA EQUIPE DE INVESTIGAÇÃO ⚠️</span>
             </div>
-            <div class="header-main">
-                <div class="logo">
-                    <div class="logo-icon">🕵️</div>
-                    <div class="logo-text">
-                        <h1>ARQUIVO CRIMINAL</h1>
-                        <p>Casos Não Resolvidos • Unidade de Investigação Especial</p>
+            <div class="header-content">
+                <div class="police-badge">
+                    <div class="badge-inner">
+                        <span>🔍</span>
+                        <span>PC</span>
                     </div>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar">PC</div>
-                    <div class="user-details">
-                        <span>Perito Criminal</span>
-                        <strong>Dra. Sofia Carvalho</strong>
+                <div class="title-section">
+                    <h1>ARQUIVO <span class="highlight">COLD CASE</span></h1>
+                    <p class="subtitle">Divisão de Casos Não Resolvidos • Unidade de Investigação Especial</p>
+                    <div class="case-count">
+                        <span id="casosResolvidos">0</span> / <span id="totalCasosCount">0</span> CASOS INVESTIGADOS
+                    </div>
+                </div>
+                <div class="investigator-card">
+                    <div class="investigator-avatar">👩‍⚖️</div>
+                    <div class="investigator-info">
+                        <span>INVESTIGADOR(A)</span>
+                        <strong>ANA BEATRIZ SANTOS</strong>
+                        <small>Nível 3 - Especialista em Cold Cases</small>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Dashboard -->
-        <div class="dashboard">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📁</div>
-                    <div class="stat-info">
-                        <span class="stat-label">CASOS ATIVOS</span>
-                        <span class="stat-value" id="totalCasos">0</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔍</div>
-                    <div class="stat-info">
-                        <span class="stat-label">EM INVESTIGAÇÃO</span>
-                        <span class="stat-value" id="investigando">0</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📝</div>
-                    <div class="stat-info">
-                        <span class="stat-label">ANOTAÇÕES</span>
-                        <span class="stat-value" id="totalAnotacoes">0</span>
-                    </div>
+        <div class="stats-panel">
+            <div class="stat">
+                <div class="stat-icon">📁</div>
+                <div>
+                    <div class="stat-value" id="totalCasos">0</div>
+                    <div class="stat-label">TOTAL DE CASOS</div>
                 </div>
             </div>
-
-            <!-- Barra de Busca -->
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar caso por nome, local ou suspeito...">
-                <select id="statusFilter">
-                    <option value="todos">Todos os casos</option>
-                    <option value="ativo">Em andamento</option>
-                    <option value="investigando">Investigando</option>
-                    <option value="arquivado">Arquivado</option>
-                </select>
-            </div>
-
-            <!-- Área Principal -->
-            <div class="main-content">
-                <!-- Lista de Casos -->
-                <div class="cases-list" id="casesList">
-                    <!-- Casos serão inseridos via JS -->
+            <div class="stat">
+                <div class="stat-icon">🔍</div>
+                <div>
+                    <div class="stat-value" id="emInvestigacao">0</div>
+                    <div class="stat-label">EM INVESTIGAÇÃO</div>
                 </div>
-
-                <!-- Área de Detalhes do Caso -->
-                <div class="case-details" id="caseDetails">
-                    <div class="empty-state">
-                        <div class="empty-icon">🔍</div>
-                        <h3>Nenhum caso selecionado</h3>
-                        <p>Selecione um caso na lista para visualizar os detalhes e fazer anotações</p>
-                    </div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">💡</div>
+                <div>
+                    <div class="stat-value" id="pistasEncontradas">0</div>
+                    <div class="stat-label">PISTAS DESCOBERTAS</div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">⭐</div>
+                <div>
+                    <div class="stat-value" id="nivelInvestigador">1</div>
+                    <div class="stat-label">NÍVEL DO INVESTIGADOR</div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal para Adicionar Caso -->
-        <div id="addCaseModal" class="modal">
-            <div class="modal-content">
+        <!-- Filtros Rápidos -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="todos">TODOS OS CASOS</button>
+            <button class="filter-btn" data-filter="nao-resolvido">NÃO RESOLVIDOS</button>
+            <button class="filter-btn" data-filter="parcial">INVESTIGAÇÃO PARCIAL</button>
+            <button class="filter-btn" data-filter="resolvido">RESOLVIDOS POR MIM</button>
+        </div>
+
+        <!-- Área Principal -->
+        <div class="main-grid">
+            <!-- Lista de Casos -->
+            <div class="cases-panel">
+                <div class="panel-header">
+                    <h3>CASOS ARQUIVADOS</h3>
+                    <span class="panel-icon">📜</span>
+                </div>
+                <div class="cases-list" id="casesList"></div>
+            </div>
+
+            <!-- Detalhes do Caso -->
+            <div class="investigation-panel" id="investigationPanel">
+                <div class="panel-header">
+                    <h3>DOSSIÊ DE INVESTIGAÇÃO</h3>
+                    <span class="panel-icon">🔬</span>
+                </div>
+                <div id="caseDetails"></div>
+            </div>
+        </div>
+
+        <!-- Modal de Pista Encontrada -->
+        <div id="clueModal" class="modal">
+            <div class="modal-content modal-clue">
                 <div class="modal-header">
-                    <h2>🔐 Novo Caso Criminal</h2>
-                    <span class="close">&times;</span>
+                    <h2>🕵️ NOVA PISTA ENCONTRADA!</h2>
+                    <span class="close-clue">&times;</span>
                 </div>
-                <form id="addCaseForm">
-                    <div class="form-group">
-                        <label>Título do Caso *</label>
-                        <input type="text" id="caseTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Data do Crime</label>
-                        <input type="date" id="caseDate">
-                    </div>
-                    <div class="form-group">
-                        <label>Local</label>
-                        <input type="text" id="caseLocation">
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="caseStatus">
-                            <option value="ativo">Em andamento</option>
-                            <option value="investigando">Investigando</option>
-                            <option value="arquivado">Arquivado</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição do Crime</label>
-                        <textarea id="caseDescription" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">➕ Adicionar Caso</button>
-                </form>
+                <div class="modal-body">
+                    <div class="clue-icon">💡</div>
+                    <div id="clueMessage" class="clue-message"></div>
+                    <div class="xp-gain" id="xpGain"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-primary" id="closeClueBtn">CONTINUAR INVESTIGAÇÃO</button>
+                </div>
             </div>
         </div>
 
-        <!-- Botão Flutuante -->
-        <button class="fab" id="fabButton">+</button>
+        <!-- Modal de Conquista -->
+        <div id="achievementModal" class="modal">
+            <div class="modal-content modal-achievement">
+                <div class="modal-header">
+                    <h2>🏆 CONQUISTA DESBLOQUEADA!</h2>
+                </div>
+                <div class="modal-body">
+                    <div id="achievementMessage"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
