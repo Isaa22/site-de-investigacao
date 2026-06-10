@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARQUIVO COLD CASE - Investigação Criminal</title>
+    <title>ARQUIVO COLD CASE - 20 Casos Investigativos</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
 </head>
@@ -14,7 +14,7 @@
         <!-- Header Investigativo -->
         <header class="header">
             <div class="warning-banner">
-                <span>⚠️ ACESSO AUTORIZADO APENAS PARA EQUIPE DE INVESTIGAÇÃO ⚠️</span>
+                <span>⚠️ ACESSO AUTORIZADO APENAS PARA EQUIPE DE INVESTIGAÇÃO - 20 CASOS ATIVOS ⚠️</span>
             </div>
             <div class="header-content">
                 <div class="police-badge">
@@ -27,7 +27,7 @@
                     <h1>ARQUIVO <span class="highlight">COLD CASE</span></h1>
                     <p class="subtitle">Divisão de Casos Não Resolvidos • Unidade de Investigação Especial</p>
                     <div class="case-count">
-                        <span id="casosResolvidos">0</span> / <span id="totalCasosCount">0</span> CASOS INVESTIGADOS
+                        <span id="casosResolvidos">0</span> / <span id="totalCasosCount">20</span> CASOS INVESTIGADOS
                     </div>
                 </div>
                 <div class="investigator-card">
@@ -35,7 +35,7 @@
                     <div class="investigator-info">
                         <span>INVESTIGADOR(A)</span>
                         <strong>ANA BEATRIZ SANTOS</strong>
-                        <small>Nível 3 - Especialista em Cold Cases</small>
+                        <small>Nível <span id="nivelDisplay">1</span> - Especialista em Cold Cases</small>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <div class="stat">
                 <div class="stat-icon">📁</div>
                 <div>
-                    <div class="stat-value" id="totalCasos">0</div>
+                    <div class="stat-value" id="totalCasos">20</div>
                     <div class="stat-label">TOTAL DE CASOS</div>
                 </div>
             </div>
@@ -71,14 +71,34 @@
                     <div class="stat-label">NÍVEL DO INVESTIGADOR</div>
                 </div>
             </div>
+            <div class="stat">
+                <div class="stat-icon">🏆</div>
+                <div>
+                    <div class="stat-value" id="xpTotal">0</div>
+                    <div class="stat-label">XP TOTAL</div>
+                </div>
+            </div>
         </div>
 
         <!-- Filtros Rápidos -->
         <div class="filters">
-            <button class="filter-btn active" data-filter="todos">TODOS OS CASOS</button>
+            <button class="filter-btn active" data-filter="todos">TODOS OS CASOS (20)</button>
             <button class="filter-btn" data-filter="nao-resolvido">NÃO RESOLVIDOS</button>
             <button class="filter-btn" data-filter="parcial">INVESTIGAÇÃO PARCIAL</button>
             <button class="filter-btn" data-filter="resolvido">RESOLVIDOS POR MIM</button>
+        </div>
+
+        <!-- Barra de Busca -->
+        <div class="search-container">
+            <input type="text" id="searchCase" class="search-input" placeholder="🔍 Buscar caso por nome, local, vítima ou suspeito...">
+            <select id="yearFilter" class="year-filter">
+                <option value="todos">Todos os anos</option>
+                <option value="1900">1900-1950</option>
+                <option value="1950">1950-1990</option>
+                <option value="1990">1990-2000</option>
+                <option value="2000">2000-2010</option>
+                <option value="2010">2010-2020</option>
+            </select>
         </div>
 
         <!-- Área Principal -->
@@ -86,7 +106,7 @@
             <!-- Lista de Casos -->
             <div class="cases-panel">
                 <div class="panel-header">
-                    <h3>CASOS ARQUIVADOS</h3>
+                    <h3>📋 CASOS ARQUIVADOS (20)</h3>
                     <span class="panel-icon">📜</span>
                 </div>
                 <div class="cases-list" id="casesList"></div>
@@ -95,14 +115,14 @@
             <!-- Detalhes do Caso -->
             <div class="investigation-panel" id="investigationPanel">
                 <div class="panel-header">
-                    <h3>DOSSIÊ DE INVESTIGAÇÃO</h3>
+                    <h3>🔬 DOSSIÊ DE INVESTIGAÇÃO</h3>
                     <span class="panel-icon">🔬</span>
                 </div>
                 <div id="caseDetails"></div>
             </div>
         </div>
 
-        <!-- Modal de Pista Encontrada -->
+        <!-- Modals -->
         <div id="clueModal" class="modal">
             <div class="modal-content modal-clue">
                 <div class="modal-header">
@@ -120,7 +140,6 @@
             </div>
         </div>
 
-        <!-- Modal de Conquista -->
         <div id="achievementModal" class="modal">
             <div class="modal-content modal-achievement">
                 <div class="modal-header">
@@ -131,7 +150,21 @@
                 </div>
             </div>
         </div>
+
+        <div id="rankingModal" class="modal">
+            <div class="modal-content modal-ranking">
+                <div class="modal-header">
+                    <h2>🏅 RANKING DE INVESTIGADORES</h2>
+                    <span class="close-ranking">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="rankingList"></div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="ranking-fab" id="rankingFab">🏆</div>
 
     <script src="script.js"></script>
 </body>
