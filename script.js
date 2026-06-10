@@ -891,3 +891,261 @@ selecionarCaso(1);
 
 console.log("🔍 SISTEMA DE INVESTIGAÇÃO CARREGADO - 20 CASOS DISPONÍVEIS!");
 console.log("🎯 DESAFIO: Resolva todos os 20 casos e torne-se um Investigador Lendário!");
+// ========== SISTEMA DE ENVIO DE INVESTIGAÇÕES ==========
+
+function enviarInvestigacaoPorEmail() {
+    const resolvidos = casos.filter(c => c.status === 'resolvido').length;
+    const progresso = ((resolvidos / 20) * 100).toFixed(1);
+    
+    // Coletar todas as teorias do usuário
+    let todasTeorias = "";
+    casos.forEach(caso => {
+        if (caso.teoriasUsuario.length > 0) {
+            todasTeorias += `
+            📋 CASO: ${caso.titulo} (${caso.ano} - ${caso.local})
+            📝 TEORIAS:
+            ${caso.teoriasUsuario.map(t => `   - ${t}`).join('\n')}
+            `;
+        }
+    });
+    
+    // Coletar estatísticas detalhadas
+    const estatisticas = `
+    =========================================
+    RELATÓRIO DE INVESTIGAÇÃO - ARQUIVO COLD CASE
+    =========================================
+    
+    👤 INVESTIGADOR: Ana Beatriz Santos
+    📅 DATA DO RELATÓRIO: ${new Date().toLocaleString()}
+    
+    📊 ESTATÍSTICAS GERAIS:
+    ├─ Casos Resolvidos: ${resolvidos}/20 (${progresso}%)
+    ├─ XP Total: ${xpTotal}
+    ├─ Nível do Investigador: ${nivel}
+    └─ Pistas Encontradas: ${pistasEncontradas}
+    
+    📋 DETALHES POR CASO:
+    ${casos.map(caso => `
+    ───────────────────────────────
+    🔍 ${caso.titulo} (${caso.ano})
+    ├─ Status: ${getStatusText(caso.status)}
+    ├─ Progresso: ${caso.progresso}%
+    ├─ Evidências: ${caso.evidencias.filter(e => e.encontrada).length}/${caso.evidencias.length}
+    ├─ Suspeitos Investigados: ${caso.suspeitos.filter(s => s.investigado).length}/${caso.suspeitos.length}
+    └─ Teorias: ${caso.teoriasUsuario.length} anotação(ões)
+    `).join('')}
+    
+    ${todasTeorias ? `
+    =========================================
+    📝 TEORIAS E ANOTAÇÕES DO INVESTIGADOR
+    =========================================
+    ${todasTeorias}
+    ` : ''}
+    
+    =========================================
+    🏆 CONQUISTAS DESBLOQUEADAS:
+    ${conquistas.primeiroCaso ? '✓ Primeiro Caso Resolvido\n' : ''}
+    ${conquistas.cincoCasos ? '✓ 5 Casos Resolvidos\n' : ''}
+    ${conquistas.dezCasos ? '✓ 10 Casos Resolvidos\n' : ''}
+    ${conquistas.todosCasos ? '✓ TODOS OS 20 CASOS RESOLVIDOS! 🏆\n' : ''}
+    =========================================
+    `;
+    
+    // Criar email
+    const assunto = encodeURIComponent(`RELATÓRIO DE INVESTIGAÇÃO - Arquivo Cold Case - ${resolvidos}/20 casos`);
+    const corpo = encodeURIComponent(estatisticas);
+    
+    // Abrir cliente de email padrão
+    window.location.href = `mailto:seu-email@exemplo.com?subject=${assunto}&body=${corpo}`;
+    
+    // Também oferecer para copiar
+    if (confirm("📧 Seu cliente de email será aberto.\n\nDeseja também copiar o relatório para a área de transferência?")) {
+        navigator.clipboard.writeText(estatisticas);
+        alert("✅ Relatório copiado para a área de transferência!");
+    }
+}
+
+function exportarComoJSON() {
+    const dadosExportacao = {
+        investigador: {
+            nome: "Ana Beatriz Santos",
+            xp: xpTotal,
+            nivel: nivel,
+            pistasEncontradas: pistasEncontradas,
+            dataExportacao: new Date().toISOString()
+        },
+        casos: casos.map(caso => ({
+            id: caso.id,
+            titulo: caso.titulo,
+            status: caso.status,
+            progresso: caso.progresso,
+            evidenciasInvestigadas: caso.evidencias.filter(e => e.encontrada).map(e => e.titulo),
+            suspeitosInvestigados: caso.suspeitos.filter(s => s.investigado).map(s => s.nome),
+            teoriasUsuario: caso.teoriasUsuario,
+            resolvidoEm: caso.resolvidoPor
+        })),
+        conquistas: conquistas
+    };
+    
+    const dataStr = JSON.stringify(dadosExportacao, null, 2);
+    const dataBlob = new Blob([dataStr], {type: "application/json"});
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `coldcase_investigacao_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert("✅ Arquivo JSON exportado com sucesso!");
+}
+
+function importarJSON(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const dados = JSON.parse(e.target.result);
+            
+            if (confirm("⚠️ Importar irá SUBSTITUIR seu progresso atual. Continuar?")) {
+                // Restaurar dados
+                if (dados.investigador) {
+                    xpTotal = dados.investigador.xp || 0;
+                    pistasEncontradas = dados.investigador.pistasEncontradas || 0;
+                }
+                
+                if (dados.casos) {
+                    dados.casos.forEach(casoImportado => {
+                        const casoExistente = casos.find(c => c.id === casoImportado.id);
+                        if (casoExistente) {
+                            casoExistente.status = casoImportado.status;
+                            casoExistente.progresso = casoImportado.progresso;
+                            casoExistente.teoriasUsuario = casoImportado.teoriasUsuario;
+                            casoExistente.resolvidoPor = casoImportado.resolvidoEm;
+                            
+                            // Restaurar evidências encontradas
+                            casoExistente.evidencias.forEach(ev => {
+                                ev.encontrada = casoImportado.evidenciasInvestigadas?.includes(ev.titulo) || false;
+                            });
+                            
+                            // Restaurar suspeitos investigados
+                            casoExistente.suspeitos.forEach(sus => {
+                                sus.investigado = casoImportado.suspeitosInvestigados?.includes(sus.nome) || false;
+                            });
+                        }
+                    });
+                }
+                
+                if (dados.conquistas) {
+                    conquistas = dados.conquistas;
+                }
+                
+                salvarProgresso();
+                atualizarStats();
+                renderizarCasos('todos');
+                if (casoSelecionado) selecionarCaso(casoSelecionado.id);
+                
+                alert("✅ Dados importados com sucesso!");
+                location.reload();
+            }
+        } catch (error) {
+            alert("❌ Erro ao importar arquivo. Verifique se é um JSON válido.");
+        }
+    };
+    reader.readAsText(file);
+}
+
+// Adicionar botões flutuantes de ação
+function adicionarBotoesAcao() {
+    const container = document.querySelector('.container');
+    
+    const actionButtons = document.createElement('div');
+    actionButtons.className = 'action-buttons';
+    actionButtons.innerHTML = `
+        <div class="action-group">
+            <button class="action-btn email-btn" onclick="enviarInvestigacaoPorEmail()" title="Enviar relatório por email">
+                📧 ENVIAR RELATÓRIO
+            </button>
+            <button class="action-btn export-btn" onclick="exportarComoJSON()" title="Exportar como arquivo JSON">
+                💾 EXPORTAR DADOS
+            </button>
+            <label class="action-btn import-btn" title="Importar arquivo JSON">
+                📂 IMPORTAR DADOS
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importarJSON(this.files[0])">
+            </label>
+        </div>
+    `;
+    
+    container.insertBefore(actionButtons, container.firstChild);
+    
+    document.querySelector('.import-btn').addEventListener('click', () => {
+        document.getElementById('importFile').click();
+    });
+}
+
+// CSS para os botões
+const styleActions = document.createElement('style');
+styleActions.textContent = `
+    .action-buttons {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        z-index: 99;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-btn {
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #1a1a2e, #0f0f14);
+        border: 1px solid #c9a84c;
+        border-radius: 30px;
+        color: #c9a84c;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .action-btn:hover {
+        background: linear-gradient(135deg, #c9a84c, #8b6914);
+        color: #0a0a0f;
+        transform: translateX(-5px);
+    }
+    
+    .email-btn { border-color: #dc2626; color: #dc2626; }
+    .email-btn:hover { background: #dc2626; color: white; }
+    
+    .export-btn { border-color: #22c55e; color: #22c55e; }
+    .export-btn:hover { background: #22c55e; color: white; }
+    
+    .import-btn { border-color: #3b82f6; color: #3b82f6; cursor: pointer; }
+    .import-btn:hover { background: #3b82f6; color: white; }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            bottom: 120px;
+            right: 15px;
+        }
+        .action-btn {
+            padding: 8px 15px;
+            font-size: 10px;
+        }
+    }
+`;
+
+document.head.appendChild(styleActions);
+
+// Inicializar botões
+setTimeout(adicionarBotoesAcao, 500);
