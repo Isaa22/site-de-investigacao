@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquivo Criminal - Casos Não Resolvidos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho Policial -->
+        <header class="header">
+            <div class="badge">
+                <span class="badge-icon">🔒</span>
+                <span>ACESSO RESTRITO - EQUIPE PERÍCIAL</span>
+            </div>
+            <div class="header-main">
+                <div class="logo">
+                    <div class="logo-icon">🕵️</div>
+                    <div class="logo-text">
+                        <h1>ARQUIVO CRIMINAL</h1>
+                        <p>Casos Não Resolvidos • Unidade de Investigação Especial</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">PC</div>
+                    <div class="user-details">
+                        <span>Perito Criminal</span>
+                        <strong>Dra. Sofia Carvalho</strong>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-info">
+                        <span class="stat-label">CASOS ATIVOS</span>
+                        <span class="stat-value" id="totalCasos">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔍</div>
+                    <div class="stat-info">
+                        <span class="stat-label">EM INVESTIGAÇÃO</span>
+                        <span class="stat-value" id="investigando">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <span class="stat-label">ANOTAÇÕES</span>
+                        <span class="stat-value" id="totalAnotacoes">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de Busca -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar caso por nome, local ou suspeito...">
+                <select id="statusFilter">
+                    <option value="todos">Todos os casos</option>
+                    <option value="ativo">Em andamento</option>
+                    <option value="investigando">Investigando</option>
+                    <option value="arquivado">Arquivado</option>
+                </select>
+            </div>
+
+            <!-- Área Principal -->
+            <div class="main-content">
+                <!-- Lista de Casos -->
+                <div class="cases-list" id="casesList">
+                    <!-- Casos serão inseridos via JS -->
+                </div>
+
+                <!-- Área de Detalhes do Caso -->
+                <div class="case-details" id="caseDetails">
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3>Nenhum caso selecionado</h3>
+                        <p>Selecione um caso na lista para visualizar os detalhes e fazer anotações</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Adicionar Caso -->
+        <div id="addCaseModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔐 Novo Caso Criminal</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="addCaseForm">
+                    <div class="form-group">
+                        <label>Título do Caso *</label>
+                        <input type="text" id="caseTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data do Crime</label>
+                        <input type="date" id="caseDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Local</label>
+                        <input type="text" id="caseLocation">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="caseStatus">
+                            <option value="ativo">Em andamento</option>
+                            <option value="investigando">Investigando</option>
+                            <option value="arquivado">Arquivado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição do Crime</label>
+                        <textarea id="caseDescription" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">➕ Adicionar Caso</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Botão Flutuante -->
+        <button class="fab" id="fabButton">+</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
